@@ -23,7 +23,7 @@ export default function Page() {
     }
   };
 
-  const pollForCompletion = async (taskId) => {
+  const pollForCompletion = async (taskId: any) => {
     const interval = setInterval(async () => {
       try {
         const statusResult = await axios.post("/api/check-status", { taskId });
