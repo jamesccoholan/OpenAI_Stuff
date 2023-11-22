@@ -8,7 +8,7 @@ import axios from "axios";
 export default function Page() {
   const [response, setResponse] = useState("");
 
-  const handleTextSubmit = async (prompt) => {
+  const handleTextSubmit = async (prompt: any) => {
     try {
       const result = await axios.post("/api/openai", { prompt });
       setResponse(result.data.result);

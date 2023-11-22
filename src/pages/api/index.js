@@ -1,32 +1,27 @@
-import { useState } from "react";
-// import TextInputForm from "../components/TextInputForm";
+// src/pages/api/index.js
 import axios from "axios";
 
-export default function Home() {
-  const [response, setResponse] = useState("");
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    const { prompt } = req.body;
 
-  const handleTextSubmit = async (prompt) => {
     try {
-      const result = await axios.post("/api/openai", { prompt });
-      setResponse(result.data.result);
+      const openAIResponse = await axios.post(
+        "https://api.openai.com/v1/engines/davinci/completions",
+        {
+          prompt: prompt,
+          // ... other necessary OpenAI request parameters
+        },
+        {
+          headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+        }
+      );
+      res.status(200).json({ result: openAIResponse.data.choices[0].text });
     } catch (error) {
-      console.error("Error fetching OpenAI response:", error);
-      setResponse("Error fetching response");
+      console.error("Error in OpenAI API request:", error);
+      res.status(500).json({ message: "Server error" });
     }
-  };
-
-  return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">
-        OpenAI Integration with Next.js
-      </h1>
-
-      <TextInputForm onSubmit={handleTextSubmit} />
-
-      <div className="mt-4">
-        <h2 className="text-lg font-semibold">Response:</h2>
-        <p className="border p-2">{response || "No response yet"}</p>
-      </div>
-    </div>
-  );
+  } else {
+    res.status(405).end(); // Method Not Allowed
+  }
 }
