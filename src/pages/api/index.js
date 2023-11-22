@@ -1,11 +1,8 @@
-// src/app/page.tsx
-"use client";
-
 import { useState } from "react";
 import TextInputForm from "../components/TextInputForm";
 import axios from "axios";
 
-export default function Page() {
+export default function Home() {
   const [response, setResponse] = useState("");
 
   const handleTextSubmit = async (prompt) => {
