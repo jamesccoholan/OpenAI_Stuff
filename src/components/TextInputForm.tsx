@@ -1,4 +1,3 @@
-// components/TextInputForm.tsx
 import { useState, FormEvent } from "react";
 
 interface TextInputFormProps {
@@ -18,12 +17,12 @@ export default function TextInputForm({ onSubmit }: TextInputFormProps) {
       <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Enter your prompt"
+        placeholder="Enter your prompt for image generation"
         rows={4}
-        className="border p-2 w-full text-black" // Tailwind class for black text
+        className="border p-2 w-full"
       />
       <button type="submit" className="bg-blue-500 text-white px-4 py-2 mt-2">
-        Submit
+        Generate Image
       </button>
     </form>
   );
