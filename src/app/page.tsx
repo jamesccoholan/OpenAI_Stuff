@@ -9,16 +9,35 @@ import Spinner from "../components/Spinner"; // Import Spinner component
 export default function Page() {
   const [imageURL, setImageURL] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [taskId, setTaskId] = useState(null);
 
   const handleTextSubmit = async (prompt: string) => {
     setIsLoading(true);
     try {
-      const result = await axios.post("/api/generate-image", { prompt });
-      setImageURL(result.data.data[0].url);
+      const initResult = await axios.post("/api/generate-image", { prompt });
+      setTaskId(initResult.data.taskId);
+      pollForCompletion(initResult.data.taskId);
     } catch (error) {
-      console.error("Error fetching OpenAI response:", error);
+      console.error("Error initiating OpenAI request:", error);
+      setIsLoading(false);
     }
-    setIsLoading(false);
+  };
+
+  const pollForCompletion = async (taskId) => {
+    const interval = setInterval(async () => {
+      try {
+        const statusResult = await axios.post("/api/check-status", { taskId });
+        if (statusResult.data.status === "completed") {
+          setImageURL(statusResult.data.data.data[0].url);
+          clearInterval(interval);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Error polling for status:", error);
+        clearInterval(interval);
+        setIsLoading(false);
+      }
+    }, 5000); // Poll every 5 seconds
   };
 
   return (
@@ -35,4 +54,3 @@ export default function Page() {
     </div>
   );
 }
-//
